@@ -1,0 +1,23 @@
+FROM ubuntu:22.04
+
+RUN apt-get update \
+    && apt-get install -y g++ \
+    && apt-get install -y cmake \
+    && apt-get install -y python3
+
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+
+ENV LANG C.UTF-8
+
+RUN apt-get install -y python3-pip
+RUN pip install conan
+RUN conan profile detect --force
+
+WORKDIR /app
+COPY . /app
+
+RUN conan install . --output-folder=build
+RUN cd build && cmake .. -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake -DENABLE_BUILD_DEPS=ON -DCMAKE_BUILD_TYPE=Release
+RUN cd build && make MoviesTestTests
+
+CMD ["/app/build/MoviesTestTests"]

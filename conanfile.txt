@@ -1,0 +1,8 @@
+[requires]
+cpp-httplib/0.10.9
+rapidjson/cci.20200410
+gtest/1.8.1
+
+[generators]
+CMakeDeps
+CMakeToolchain
